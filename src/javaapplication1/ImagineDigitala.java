@@ -504,13 +504,13 @@ public class ImagineDigitala {
         copiaza(Y, S, DIM);
     }
 
-    void accestuareDetalii() {
+    void accentuareDetalii() {
         float c = 10f;
         filtreaza(Y, S, new float[][]{{-1, -1, -1}, {-1, c, -1}, {-1, -1, -1}}, c - 8, DIM);
         copiaza(Y, S, DIM);
     }
 
-    void accestuareDetaliiSlider(float value) {
+    void accentuareDetaliiSlider(float value) {
         float c;
         if (value >= 50) {
             c = 25f;

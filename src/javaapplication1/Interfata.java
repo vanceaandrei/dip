@@ -5,7 +5,9 @@
  */
 package javaapplication1;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import javax.swing.ImageIcon;
+import javax.swing.JSlider;
 import util.Const;
 
 /**
@@ -53,6 +55,8 @@ public class Interfata extends javax.swing.JFrame {
         jButton12 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
+        jButton13 = new javax.swing.JButton();
+        jSlider1 = new javax.swing.JSlider();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jCheckBox1 = new javax.swing.JCheckBox();
@@ -67,8 +71,18 @@ public class Interfata extends javax.swing.JFrame {
         jLabel1.setPreferredSize(new java.awt.Dimension(4, 4));
 
         jButton3.setText("zoom+");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("zoom-");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -236,15 +250,38 @@ public class Interfata extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("HSV", jPanel7);
 
+        jButton13.setText("Accentuare Detalii");
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
+
+        jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider1StateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 361, Short.MAX_VALUE)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton13)
+                    .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(151, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 484, Short.MAX_VALUE)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton13)
+                .addGap(29, 29, 29)
+                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(395, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Accentuare Detalii", jPanel8);
@@ -360,6 +397,28 @@ public class Interfata extends javax.swing.JFrame {
         afiseazaImagineDigitala();
     }//GEN-LAST:event_jButton9ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        //zoom+
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        //zoom-
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        //accentuare detalii
+        id.accentuareDetalii();
+        afiseazaImagineDigitala();
+    }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
+        //accentuare detalii slider 
+        //TODO fix slider
+        id.accentuareDetaliiSlider(((JSlider)evt.getSource()).getValue());
+        afiseazaImagineDigitala();
+    }//GEN-LAST:event_jSlider1StateChanged
+
+    
     private void afiseazaImagineDigitala() {
         id.afiseaza(jLabel1, jCheckBox1.isSelected());
     }
@@ -404,6 +463,7 @@ public class Interfata extends javax.swing.JFrame {
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -422,6 +482,7 @@ public class Interfata extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JSlider jSlider1;
     private javax.swing.JTabbedPane jTabbedPane1;
     // End of variables declaration//GEN-END:variables
 }
