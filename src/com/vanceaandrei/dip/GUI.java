@@ -3,27 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package javaapplication1;
+package com.vanceaandrei.dip;
 
-import com.sun.xml.internal.bind.v2.TODO;
-import javax.swing.ImageIcon;
-import javax.swing.JSlider;
 import util.Const;
 
 /**
  *
  * @author andrei.vancea
  */
-public class Interfata extends javax.swing.JFrame {
+public class GUI extends javax.swing.JFrame {
 
-    ImagineDigitala id;
+    DigitalImage id;
 
     /**
-     * Creates new form Interfata
+     * Creates new form GUI
      */
-    public Interfata() {
+    public GUI() {
         initComponents();
-        id = new ImagineDigitala(Const.picture, this);
+        id = new DigitalImage(Const.picture, this);
     }
 
     /**
@@ -65,10 +62,7 @@ public class Interfata extends javax.swing.JFrame {
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jLabel1.setMaximumSize(new java.awt.Dimension(4, 4));
-        jLabel1.setMinimumSize(new java.awt.Dimension(4, 4));
         jLabel1.setName(""); // NOI18N
-        jLabel1.setPreferredSize(new java.awt.Dimension(4, 4));
 
         jButton3.setText("zoom+");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -353,48 +347,48 @@ public class Interfata extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        afiseazaImagineDigitala();
+        showDigitalImage();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        id = new ImagineDigitala(Const.picture, this);
-        afiseazaImagineDigitala();
+        id = new DigitalImage(Const.picture, this);
+        showDigitalImage();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         //box 3x3
         id.box3x3();
-        afiseazaImagineDigitala();
+        showDigitalImage();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         //laplacianHV
         id.laplacianHV();
-        afiseazaImagineDigitala();
+        showDigitalImage();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         //laplacianHVD
         id.laplacianHVD();
-        afiseazaImagineDigitala();
+        showDigitalImage();
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         //zgomot
-        id.zgomot2();
-        afiseazaImagineDigitala();
+        id.noise2();
+        showDigitalImage();
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         //median
         id.median();
-        afiseazaImagineDigitala();
+        showDigitalImage();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         //max
         id.max();
-        afiseazaImagineDigitala();
+        showDigitalImage();
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -407,20 +401,18 @@ public class Interfata extends javax.swing.JFrame {
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         //accentuare detalii
-        id.accentuareDetalii();
-        afiseazaImagineDigitala();
+        id.sharpenDetails();
+        showDigitalImage();
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         //accentuare detalii slider 
-        //TODO fix slider
-        id.accentuareDetaliiSlider(((JSlider)evt.getSource()).getValue());
-        afiseazaImagineDigitala();
+        //TODO add slider
+        showDigitalImage();
     }//GEN-LAST:event_jSlider1StateChanged
 
-    
-    private void afiseazaImagineDigitala() {
-        id.afiseaza(jLabel1, jCheckBox1.isSelected());
+    private void showDigitalImage() {
+        id.show(jLabel1, jCheckBox1.isSelected());
     }
 
     /**
@@ -440,20 +432,21 @@ public class Interfata extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Interfata.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Interfata.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Interfata.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Interfata.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Interfata().setVisible(true);
+                new GUI().setVisible(true);
             }
         });
     }
