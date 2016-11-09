@@ -390,8 +390,7 @@ public class DigitalImage {
         }
     }
 
-    void canny() {
-        float pragj = 5, prags = 60;
+    void canny(float lowThreshold, float highThreshold) {
         filtrate(Y, S, new float[][]{{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}}, 1, DIM);
         //s=gx
         filtrate(Y, S2, new float[][]{{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}}, 1, DIM);
@@ -417,8 +416,7 @@ public class DigitalImage {
         //plasam in S2 modulul gradientului
         for (int i = 1; i < DIM - 1; i++) {
             for (int j = 1; j < DIM - 1; j++) {
-                S2[i][j]
-                        = (float) Math.sqrt(S[i][j] * S[i][j] + S2[i][j] * S2[i][j]);
+                S2[i][j] = (float) Math.sqrt(S[i][j] * S[i][j] + S2[i][j] * S2[i][j]);
             }
         }
         //urmeaza sub?ierea conturului
@@ -447,7 +445,7 @@ public class DigitalImage {
         //la contur
         for (int i = 1; i < DIM - 1; i++) {
             for (int j = 1; j < DIM - 1; j++) {
-                if (S[i][j] > prags) {
+                if (S[i][j] > highThreshold) {
                     S2[i][j] = 0;
                 } else {
                     S2[i][j] = 255;
@@ -460,26 +458,37 @@ public class DigitalImage {
             for (int j = 1; j < DIM - 1; j++) {
                 Y[i][j] = S2[i][j];
                 if (S2[i][j] == 0) {
-                    if (S[i - 1][j] > pragj) {
+                    if (S[i - 1][j] > lowThreshold) { //sus
                         Y[i - 1][j] = 0;
                     }
-                    if (S[i][j + 1] > pragj) {
+                    if (S[i][j + 1] > lowThreshold) { //dreapta
                         Y[i][j + 1] = 0;
                     }
-                    if (S[i][j - 1] > pragj) {
+                    if (S[i][j - 1] > lowThreshold) { //stanga
                         Y[i][j - 1] = 0;
                     }
-                    if (S[i + 1][j] > pragj) {
+                    if (S[i + 1][j] > lowThreshold) { //jos
                         Y[i + 1][j] = 0;
                     }
-                }//tema de pus si ceilalti 4 vecini
+                    if (S[i - 1][j - 1] > lowThreshold) { //stanga sus
+                        Y[i - 1][j - 1] = 0;
+                    }
+                    if (S[i - 1][j + 1] > lowThreshold) {  //stanga jos
+                        Y[i - 1][j + 1] = 0;
+                    }
+                    if (S[i - 1][j + 1] > lowThreshold) {  //dreapta sus
+                        Y[i - 1][j + 1] = 0;
+                    }
+                    if (S[i + 1][j + 1] > lowThreshold) { //dreapta jos
+                        Y[i + 1][j + 1] = 0;
+                    }
+                }
             }
         }
 
     }
 
-    void markSobelOutline() {
-        float threshold = 80;
+    void markSobelOutline(float threshold) {
         filtrate(Y, S, new float[][]{{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}},
                 1, DIM);//S va contine gradientii orizontali
         filtrate(Y, S2, new float[][]{{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}},
@@ -954,7 +963,7 @@ public class DigitalImage {
         }
     }
 
-    void binarizes(int k) {
+    void threshold(int k) {
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
                 Y[i][j] = Y[i][j] > k ? 255 : 0;
