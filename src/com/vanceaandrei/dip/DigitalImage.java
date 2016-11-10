@@ -507,15 +507,15 @@ public class DigitalImage {
         }
     }
 
-    void markOutline1() {
-        markOutline(Y, S, DIM);
+    void markOutline1(int p) {
+        markOutline(Y, S, DIM, p);
         copy(Y, S, DIM);
     }
 
-    void markOutline(float[][] orig, float[][] dest, int n) {
+    void markOutline(float[][] orig, float[][] dest, int n, int p) {
         for (int i = 1; i < n - 1; i++) {
             for (int j = 1; j < n - 1; j++) {
-                if (insideOutline(orig, i, j)) {
+                if (insideOutline(orig, i, j, p)) {
                     dest[i][j] = 0;
                 } else {
                     dest[i][j] = 255;
@@ -541,8 +541,8 @@ public class DigitalImage {
         }
     }
 
-    boolean insideOutline(float[][] tab, int i, int j) {
-        float p = 12;//prag determinare contur
+    boolean insideOutline(float[][] tab, int i, int j, int p) {
+//        float p = 12;//prag determinare contur
         float x = tab[i][j];//pixelul acoperit de elementul central
         //pixel central mai intunecat==> contuir interior
         return tab[i - 1][j - 1] - x > p

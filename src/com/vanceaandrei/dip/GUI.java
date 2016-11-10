@@ -53,9 +53,6 @@ public class GUI extends javax.swing.JFrame {
         jButton11 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
-        jPanel8 = new javax.swing.JPanel();
-        jButton13 = new javax.swing.JButton();
-        jSlider1 = new javax.swing.JSlider();
         jPanel9 = new javax.swing.JPanel();
         jButton14 = new javax.swing.JButton();
         jButton15 = new javax.swing.JButton();
@@ -266,42 +263,6 @@ public class GUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("HSV", jPanel7);
 
-        jButton13.setText("Accentuare Detalii");
-        jButton13.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton13ActionPerformed(evt);
-            }
-        });
-
-        jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                jSlider1StateChanged(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton13)
-                    .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(276, Short.MAX_VALUE))
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton13)
-                .addGap(29, 29, 29)
-                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(414, Short.MAX_VALUE))
-        );
-
-        jTabbedPane1.addTab("Accentuare Detalii", jPanel8);
-
         jButton14.setText("Accentuare Detalii");
         jButton14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -325,6 +286,19 @@ public class GUI extends javax.swing.JFrame {
         });
 
         jButton16.setText("Trasare contur int vecinatati");
+        jButton16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton16ActionPerformed(evt);
+            }
+        });
+
+        jSlider3.setMaximum(50);
+        jSlider3.setValue(12);
+        jSlider3.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider3StateChanged(evt);
+            }
+        });
 
         jButton17.setText("Trasare contur Laplacian");
         jButton17.addActionListener(new java.awt.event.ActionListener() {
@@ -345,6 +319,14 @@ public class GUI extends javax.swing.JFrame {
         jSlider4.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSlider4StateChanged(evt);
+            }
+        });
+
+        jSlider5.setMaximum(255);
+        jSlider5.setValue(225);
+        jSlider5.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider5StateChanged(evt);
             }
         });
 
@@ -567,61 +549,56 @@ public class GUI extends javax.swing.JFrame {
         showDigitalImage();
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        //box 3x3
-        di.box3x3();
-        showDigitalImage();
-    }//GEN-LAST:event_jButton5ActionPerformed
+    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton20ActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        //laplacianHV
+    private void jSlider7StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider7StateChanged
+        // sobel threshold
+        int value = ((JSlider) evt.getSource()).getValue();
+        jLabel8.setText(String.valueOf(value));
+    }//GEN-LAST:event_jSlider7StateChanged
+
+    private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
+        // Sobel filter
+        int threshold = jSlider7.getValue();
+        di.markSobelOutline(threshold);
+        showDigitalImage();
+    }//GEN-LAST:event_jButton19ActionPerformed
+
+    private void jSlider6StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider6StateChanged
+        // canny's low threshold
+        int value = ((JSlider) evt.getSource()).getValue();
+        jLabel3.setText(String.valueOf(value));
+    }//GEN-LAST:event_jSlider6StateChanged
+
+    private void jSlider4StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider4StateChanged
+        //laplacian slider
+        int value = ((JSlider) evt.getSource()).getValue();
+        jLabel5.setText(String.valueOf(value));
+    }//GEN-LAST:event_jSlider4StateChanged
+
+    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
+        // interval outline
+        di.interval();
+        di.negative();
+        di.threshold(jSlider5.getValue());
+        showDigitalImage();
+    }//GEN-LAST:event_jButton18ActionPerformed
+
+    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
+        // Laplacian outline
         di.laplacianHV();
+        di.negative();
+        di.threshold(jSlider4.getValue());
         showDigitalImage();
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_jButton17ActionPerformed
 
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        //laplacianHVD
-        di.laplacianHVD();
-        showDigitalImage();
-    }//GEN-LAST:event_jButton12ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        //zgomot
-        di.noise2();
-        showDigitalImage();
-    }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        //median
-        di.median();
-        showDigitalImage();
-    }//GEN-LAST:event_jButton8ActionPerformed
-
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        //max
-        di.max();
-        showDigitalImage();
-    }//GEN-LAST:event_jButton9ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        //zoom+
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        //zoom-
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        //accentuare detalii
-        di.sharpenDetails();
-        showDigitalImage();
-    }//GEN-LAST:event_jButton13ActionPerformed
-
-    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
-        //accentuare detalii slider 
-        //TODO add slider
-        showDigitalImage();
-    }//GEN-LAST:event_jSlider1StateChanged
+    private void jSlider2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider2StateChanged
+        // canny's high threshold
+        int value = ((JSlider) evt.getSource()).getValue();
+        jLabel2.setText(String.valueOf(value));
+    }//GEN-LAST:event_jSlider2StateChanged
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         // canny
@@ -635,53 +612,67 @@ public class GUI extends javax.swing.JFrame {
         showDigitalImage();
     }//GEN-LAST:event_jButton14ActionPerformed
 
-    private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
-        // Sobel filter
-        int threshold = jSlider7.getValue();
-        di.markSobelOutline(threshold);
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        //laplacianHVD
+        di.laplacianHVD();
         showDigitalImage();
-    }//GEN-LAST:event_jButton19ActionPerformed
+    }//GEN-LAST:event_jButton12ActionPerformed
 
-    private void jSlider2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider2StateChanged
-        // canny's high threshold
-        int value = ((JSlider) evt.getSource()).getValue();
-        jLabel2.setText(String.valueOf(value));
-    }//GEN-LAST:event_jSlider2StateChanged
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        //max
+        di.max();
+        showDigitalImage();
+    }//GEN-LAST:event_jButton9ActionPerformed
 
-    private void jSlider6StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider6StateChanged
-        // canny's low threshold
-        int value = ((JSlider) evt.getSource()).getValue();
-        jLabel3.setText(String.valueOf(value));
-    }//GEN-LAST:event_jSlider6StateChanged
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        //median
+        di.median();
+        showDigitalImage();
+    }//GEN-LAST:event_jButton8ActionPerformed
 
-    private void jSlider7StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider7StateChanged
-        // sobel threshold
-        int value = ((JSlider) evt.getSource()).getValue();
-        jLabel8.setText(String.valueOf(value));
-    }//GEN-LAST:event_jSlider7StateChanged
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        //zgomot
+        di.noise2();
+        showDigitalImage();
+    }//GEN-LAST:event_jButton7ActionPerformed
 
-    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-        // interval outline
-        di.interval();
-    }//GEN-LAST:event_jButton18ActionPerformed
-
-    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton20ActionPerformed
-
-    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-        // Laplacian outline
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        //laplacianHV
         di.laplacianHV();
-        di.negative();
-        di.threshold(jSlider4.getValue());
         showDigitalImage();
-    }//GEN-LAST:event_jButton17ActionPerformed
+    }//GEN-LAST:event_jButton6ActionPerformed
 
-    private void jSlider4StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider4StateChanged
-        //laplacian slider
-        int value = ((JSlider) evt.getSource()).getValue();
-        jLabel5.setText(String.valueOf(value));
-    }//GEN-LAST:event_jSlider4StateChanged
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        //box 3x3
+        di.box3x3();
+        showDigitalImage();
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        //zoom-
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        //zoom+
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jSlider5StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider5StateChanged
+        // interval slider
+        int value = ((JSlider)evt.getSource()).getValue();
+        jLabel6.setText(String.valueOf(value));
+    }//GEN-LAST:event_jSlider5StateChanged
+
+    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+        // interior outline
+        di.markOutline1(jSlider3.getValue());
+        showDigitalImage();
+    }//GEN-LAST:event_jButton16ActionPerformed
+
+    private void jSlider3StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider3StateChanged
+        // interior outline slider
+        int value = ((JSlider)evt.getSource()).getValue();
+        jLabel4.setText(String.valueOf(value));
+    }//GEN-LAST:event_jSlider3StateChanged
 
     private void showDigitalImage() {
         di.show(jLabel1, jCheckBox1.isSelected());
@@ -743,7 +734,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton16;
@@ -774,9 +764,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JSlider jSlider1;
     private javax.swing.JSlider jSlider2;
     private javax.swing.JSlider jSlider3;
     private javax.swing.JSlider jSlider4;
