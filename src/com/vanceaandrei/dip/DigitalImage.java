@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import util.Const;
 
 /**
  *
@@ -569,12 +570,12 @@ public class DigitalImage {
                 || x - tab[i + 1][j] > p;
     }
 
-    void sharpenDetails() {
+    void sharpenDetails(float c) {
         //c>8
         //c=8 --> Filtrul trece sus
         //c mare --> imagine nemodificata
         //c apropiat de 8 --> accentuare detalii
-        float c = 10f;
+//        float c = 10f;
         filtrate(Y, S, new float[][]{{-1, -1, -1}, {-1, c, -1}, {-1, -1, -1}},
                 c - 8, DIM);
         copy(Y, S, DIM);
@@ -632,6 +633,7 @@ public class DigitalImage {
 
     void median() {
         minimMaximMedianInterval(Y, S, DIM, 3, 3);
+        fixBorders(S, DIM);
         //3=dimensiunea filtrului (3x3)
         //1=minim
         //2=maxim
@@ -642,16 +644,19 @@ public class DigitalImage {
 
     void max() {
         minimMaximMedianInterval(Y, S, DIM, 3, 2);
+        fixBorders(S, DIM);
         copy(Y, S, DIM);
     }
 
     void min() {
         minimMaximMedianInterval(Y, S, DIM, 3, 1);
+        fixBorders(S, DIM);
         copy(Y, S, DIM);
     }
 
     void interval() {
         minimMaximMedianInterval(Y, S, DIM, 3, 4);
+        fixBorders(S, DIM);
         copy(Y, S, DIM);
     }
 
@@ -732,6 +737,19 @@ public class DigitalImage {
         {1, 1, 1, 1, 1}, {1, 1, 1, 1, 1}}, 25, DIM / 2);
         copy(Q, S, DIM / 2);
     }
+    
+    void box7x7() {
+        filtrate(Y, S, new float[][]{{1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}}, 49, DIM);
+        copy(Y, S, DIM);
+
+        filtrate(I, S, new float[][]{{1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}}, 49, DIM / 2);
+        copy(I, S, DIM / 2);
+        filtrate(Q, S, new float[][]{{1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}}, 49, DIM / 2);
+        copy(Q, S, DIM / 2);
+    }
 
     void gaussian() {
         filtrate(Y, S, new float[][]{{1, 2, 1}, {2, 4, 2}, {1, 2, 1}}, 16, DIM);
@@ -745,7 +763,7 @@ public class DigitalImage {
     void noise2() {
         //adauga/scade zgomot
         float k = 0.1f;
-        ImageIcon zgomot = new ImageIcon("zgomot.gif");
+        ImageIcon zgomot = Const.picture;
         int pixeliImagine[] = new int[DIM * DIM];
         PixelGrabber grabber = new PixelGrabber(zgomot.getImage().getSource(), 0, 0, DIM, DIM, pixeliImagine, 0, DIM);
 
@@ -1038,4 +1056,18 @@ public class DigitalImage {
         }
     }
 
+    private void fixBorders(float[][] dest, int n){
+        for(int i = 0; i < n; i++){
+            dest[i][0] = dest[i][1]; //left border
+            dest[0][i] = dest[1][i]; //top border
+            dest[n-1][i] = dest[n-2][i]; //bot border
+            dest[i][n-1] = dest[i][n-2];
+        }
+        
+        //fix image corners
+        dest[0][0] = dest[1][1]; //top left
+        dest[0][n-1] = dest[1][n-2]; //top right
+        dest[n-1][0] = dest[n-2][2]; //bot left
+        dest[n-1][n-1] = dest[n-2][n-2]; //bot right
+    }
 }
