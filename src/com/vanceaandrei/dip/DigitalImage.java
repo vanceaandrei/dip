@@ -20,7 +20,7 @@ import util.Const;
 
 /**
  *
- * @author ovidiu
+ * @author vancea
  */
 public class DigitalImage {
 
@@ -43,11 +43,11 @@ public class DigitalImage {
 
     DigitalImage(ImageIcon picture, JFrame gui) {
         this.gui = gui;
-        separateColors(picture);//realizeaza conversia din RGB in YC1C2
+        separateColors(picture);
     }
 
     ImageIcon imageIcon() {
-        //return new ImageIcon(compuneDinHSV());
+        //return new ImageIcon(composeFromHSV());
         return new ImageIcon(composeFromRGB());
     }
 
@@ -56,24 +56,20 @@ public class DigitalImage {
     }
 
     void separateColors(ImageIcon poza) {
-        //--------------------------------
-        //plaseaza pixelii imaginii in tabloul pixeliimagine
-        //converte?te imaginea �ntr-un spa?iu de culoare de tip luminan?a - crominan?a 
-        //?i plaseaza cele 3 componente rezultate in tablourile Y, I ?i Q
 
         PixelGrabber grabber = new PixelGrabber(poza.getImage().getSource(),
                 0, 0, DIM, DIM, imagePixels, 0, DIM);
-        //argumente:
+        //parameters:
         //ImageProducer
-        //0,0=coordonatele coltului din stanga sus
-        //DIM, DIM=latime, inaltime
-        //pixeliimagine=tabloul in care se plaseaza datele imaginii
-        //0 = offsetul la care se plaseaza primul pixel
-        //lungimea unei linii (tabloul nu e bidimensional)
+        //0,0=upper left corner coordinates
+        //DIM, DIM=Height, Width
+        //imagePixels=array that contains images pixels
+        //0 = offsetul where the first pixel is placed
+        //length of a line
 
         try {
-            grabber.grabPixels();//plaseaza pixelii imaginii �n tabloul pixeliimagine
-        } catch (Exception e) {
+            grabber.grabPixels(); //place all pixels into imagePixels array
+        } catch (InterruptedException e) {
             return;
         }
         int r, g, b;
@@ -83,23 +79,14 @@ public class DigitalImage {
                 r = CM.getRed(imagePixels[i * DIM + j]);
                 g = CM.getGreen(imagePixels[i * DIM + j]);
                 b = CM.getBlue(imagePixels[i * DIM + j]);
-                //r,g,b reprezinta componentele cromatice ale pixelului curent
-                Y[i][j] = 0.299f * r + 0.587f * g + 0.114f * b;//calculam luminozitatea pixelului curent (Y)
-                //---crominantele sunt pastrate la rezolutie injumatatit
-                //---fiecare element al tabloului contine media a 4 pixeli invecinati
+
+                Y[i][j] = 0.299f * r + 0.587f * g + 0.114f * b;//calculate brightness of the current pixel (Y)
                 if (i % 2 == 0 && j % 2 == 0) {
                     I[i / 2][j / 2] = 0;
                     Q[i / 2][j / 2] = 0;
                 }
-                //calculeaza media grupului de 4 pixeli �nvecina?i
-                I[i / 2][j / 2] += (0.5f * r - 0.2f * g - 0.3f * b) / 4;//I[i/2][j/2]=0;//poza alb - negru
-                Q[i / 2][j / 2] += (0.3f * r + 0.4f * g - 0.7f * b) / 4;//Q[i/2][j/2]=0;
-                // matricea de transformare
-                // se folose?te un spa?iu de culoare original
-                //   0.299    +0.587  +0.114
-                //   0.5      -0.2    -0.3 suma liniei=0
-                //   0.3      +0.4    -0.7 suma liniei=0
-
+                I[i / 2][j / 2] += (0.5f * r - 0.2f * g - 0.3f * b) / 4;
+                Q[i / 2][j / 2] += (0.3f * r + 0.4f * g - 0.7f * b) / 4;
             }
         }
     }
@@ -162,19 +149,11 @@ public class DigitalImage {
     }
 
     void convertToHSV(ImageIcon poza) {
-        //int pixeliImagine[]=new int[DIM*DIM];
         PixelGrabber grabber = new PixelGrabber(poza.getImage().getSource(),
                 0, 0, DIM, DIM, imagePixels, 0, DIM);
-        //argumente:
-        //ImageProducer
-        //0,0=coordonatele coltului din stanga sus
-        //DIM, DIM=latime, inaltime
-        //pixeliimagine=tabloul in care se plaseaza datele imaginii
-        //0 = offsetul la care se plaseaza primul pixel
-        //lungimea unei linii (tabloul nu e bidimensional)
 
         try {
-            grabber.grabPixels();//plaseaza pixelii imaginii �n tabloul pixeliimagine
+            grabber.grabPixels();
         } catch (Exception e) {
             return;
         }
@@ -194,10 +173,7 @@ public class DigitalImage {
         }
     }
 
-    Image compuneDinHSV() {
-        //int r,g,b;
-        //float pY, pI, pQ;
-        //int pixeliImagine[]=new int[DIM*DIM];
+    Image composeFromHSV() {
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
                 imagePixels[i * DIM + j] = Color.HSBtoRGB(h[i][j], s[i][j], v[i][j]);
@@ -207,10 +183,8 @@ public class DigitalImage {
     }
 
     Image composeColors(boolean blackAndWhite) {
-        //-------------------
         int r, g, b;
         float pY, pI, pQ;
-        //int pixeliImagine[]=new int[DIM*DIM];
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
                 pY = Y[i][j];
@@ -220,46 +194,21 @@ public class DigitalImage {
                     pI = I[i / 2][j / 2];
                     pQ = Q[i / 2][j / 2];
                 }
-                //---YC'C"
-                //pI=pY=0;
                 r = fixEnds(Math.round(pY + 1.756f * pI - 0.590 * pQ));
                 g = fixEnds(Math.round(pY - 0.937f * pI + 0.564 * pQ));
                 b = fixEnds(Math.round(pY + 0.217f * pI - 1.359 * pQ));
-                //g=b=0; //afiseaza doar r
-                //r=b=0; //afiseaza doar g
-                //r=g=0; //afiseaza doar b
-                //inversa matricei de transformare
-                //  1    +1.756  -0.590
-                //  1    -0.937  +0.564
-                //  1    +0.217  -1.359
 
-                //fiecare pixel e reprezentat pe 24 de bi?i
-                imagePixels[i * DIM + j] = 0xff000000; // primii 8 bi?i reprezinta opacitatea
-                imagePixels[i * DIM + j] |= r << 16;//urmatorii 8 reprezinta componenta r
-                imagePixels[i * DIM + j] |= g << 8;//urmatorii 8 reprezinta componenta g
-                imagePixels[i * DIM + j] |= b;//urmatorii 8 reprezinta componenta b
-
-                //pixeliImagine[i*DIM+j]=r<<16 | g<<8 | b | 0xff000000;
-                //fiecare pixel e reprezentat pe 24 de biti
-                //primii 8 reprezinta opacitatea
-                //urmatorii 8 reprezinta componenta r
-                //urmatorii 8 g
-                //ultimii 8 b
+                //each pixel is represented on 24 bytes
+                imagePixels[i * DIM + j] = 0xff000000; // first 8 represent opacity
+                imagePixels[i * DIM + j] |= r << 16;// next 8 represent r component
+                imagePixels[i * DIM + j] |= g << 8;// next 8 represent g component
+                imagePixels[i * DIM + j] |= b;// last 8 represent b component
             }
         }
-        //sintetizeaza imaginea pe baza datelor din tabloul pixeliImagine
         return gui.createImage(new MemoryImageSource(DIM, DIM, imagePixels, 0, DIM));
-        //apel metoda a clasei JFrame
-        //latime, inaltime, pixeli, offset, lungimea unui rand de pixeli
-        //tema de casa
-        //modificati aplica?ia astfel inc�t sa foloseasca spa?iile de culoare
-        //YIQ, YCbCr ?i YUV
-        //afi?a?i pe r�nd c�te una din componentele spectrale.
     }
 
     int fixEnds(long v) {
-        //---corecteaza eventualele erori la capete
-//         return (int)v;  
         if (v < 0) {
             return 0;
         }
@@ -270,11 +219,11 @@ public class DigitalImage {
     }
 
     void thresholding() {
-        float k = 170;//stabileste pragul
+        float k = 170;// set the threshold
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
                 if (Y[i][j] > k) {
-                    Y[i][j] = 0;//binarizare + negativare
+                    Y[i][j] = 0;//thresholding + negative
                 } else {
                     Y[i][j] = 255;
                 }
@@ -282,45 +231,37 @@ public class DigitalImage {
         }
     }
 
-    void outlineBin() {
+    void outlineThreshold() {
         calculateErosion(Y, S, DIM);
-        //scadem imaginea erodata din original
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
-                if (S[i][j] == 0 && Y[i][j] == 0)//anulam pixelii din interiorul contururilor
-                {
+                if (S[i][j] == 0 && Y[i][j] == 0) {
                     Y[i][j] = 255;
                 }
             }
         }
-        //pixelii care sunt negri ?i �n imaginea originala ?i in cea erodata
-        //se transforma in albi
     }
 
     void fill(int mouseY, int mouseX) {
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
-                S[i][j] = 255;//imagine alba
+                S[i][j] = 255;//white image
             }
         }
-        S[mouseY][mouseX] = 0;//un pixel negru in regiune
+        S[mouseY][mouseX] = 0;
 
         do {
             copy(S2, S, DIM);
             calcExpansion(S2, S, DIM);
-            //stergem pixelii de pe contur
             for (int i = 0; i < DIM; i++) {
                 for (int j = 0; j < DIM; j++) {
-                    if (Y[i][j] == 0)//daca suntem pe contur
-                    {
-                        S[i][j] = 255;//?terge conturul (�l traseaza cu alb)
+                    if (Y[i][j] == 0) {
+                        S[i][j] = 255;
                     }
                 }
             }
         } while (!compare(S, S2, DIM));
 
-        //calculam "suma" cu imaginea originala
-        //adaugam conturul umplut la imaginea originala
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
                 if (S2[i][j] == 0) {
@@ -342,24 +283,22 @@ public class DigitalImage {
     }
 
     void erosion() {
-        calculateErosion(Y, S, DIM);//plaseaza rezultatul in S
+        calculateErosion(Y, S, DIM);
         copy(Y, S, DIM);
     }
 
     void calculateErosion(float[][] orig, float[][] dest, int n) {
         for (int i = 1; i < n - 1; i++) {
             for (int j = 1; j < n - 1; j++) {
-                if (orig[i][j] == 0)//origine=negru
-                {
+                if (orig[i][j] == 0) {
                     if (orig[i - 1][j] == 255 || orig[i + 1][j] == 255
-                            || orig[i][j - 1] == 255 || orig[i][j + 1] == 255) //exista un vecin alb
-                    {
-                        dest[i][j] = 255;//origine=alb
+                            || orig[i][j - 1] == 255 || orig[i][j + 1] == 255) {
+                        dest[i][j] = 255;
                     } else {
                         dest[i][j] = 0;
                     }
                 } else {
-                    dest[i][j] = 255;//zonele albe raman albe
+                    dest[i][j] = 255;
                 }
             }
         }
@@ -371,11 +310,10 @@ public class DigitalImage {
     }
 
     void calcExpansion(float[][] orig, float[][] dest, int n) {
-        DigitalImage.this.fill(dest, n, 255);//curata tabloul destinatie
+        DigitalImage.this.fill(dest, n, 255);//clean destination array
         for (int i = 1; i < n - 1; i++) {
             for (int j = 1; j < n - 1; j++) {
-                if (orig[i][j] == 0)//orig elem = negru
-                {
+                if (orig[i][j] == 0) {
                     dest[i][j] = dest[i - 1][j]
                             = dest[i + 1][j] = dest[i][j - 1] = dest[i][j + 1] = 0;
                 }
@@ -392,15 +330,15 @@ public class DigitalImage {
     }
 
     void canny(float lowThreshold, float highThreshold) {
-        filtrate(Y, S, new float[][]{{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}}, 1, DIM);
+        filter(Y, S, new float[][]{{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}}, 1, DIM);
         //s=gx
-        filtrate(Y, S2, new float[][]{{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}}, 1, DIM);
+        filter(Y, S2, new float[][]{{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}}, 1, DIM);
         //s2=gy
         double t;
         for (int i = 1; i < DIM - 1; i++) {
             for (int j = 1; j < DIM - 1; j++) {
                 t = Math.atan(S2[i][j] / S[i][j]) * 180 / Math.PI;
-                //rotunjite theta
+                //theta round
                 if (t < -67.5) {
                     Theta[i][j] = -90;
                 } else if (t < -22.5) {
@@ -414,36 +352,36 @@ public class DigitalImage {
                 }
             }
         }
-        //plasam in S2 modulul gradientului
         for (int i = 1; i < DIM - 1; i++) {
             for (int j = 1; j < DIM - 1; j++) {
                 S2[i][j] = (float) Math.sqrt(S[i][j] * S[i][j] + S2[i][j] * S2[i][j]);
             }
         }
-        //urmeaza sub?ierea conturului
-        //punem rezultatul �n S
-        for (int i = 1; i < DIM - 1; i++) {
-            for (int j = 1; j < DIM - 1; j++) {
-                if ((Theta[i][j] == 0 && (S2[i][j] < S2[i][j + 1] || S2[i][j] < S2[i][j - 1]))
-                        || (Theta[i][j] == 45 && (S2[i][j] < S2[i - 1][j + 1] || S2[i][j] < S2[i + 1][j - 1]))
-                        || (Theta[i][j] == -45 && (S2[i][j] < S2[i + 1][j + 1] || S2[i][j] < S2[i - 1][j - 1]))
-                        || ((Theta[i][j] == -90 || Theta[i][j] == 90)
-                        && (S2[i][j] < S2[i + 1][j] || S2[i][j] < S2[i - 1][j]) //asa merge mai prost(Theta[i][j]==-90 && S2[i][j]<S2[i+1][j])
-                        //                       ||
-                        //                 (Theta[i][j]==90 && S2[i][j]<S2[i-1][j])
-                        )) {
-                    S[i][j] = 0;
-                } //daca gasesc un vecin mai important, sterg pixelul de pe contur
-                else {
-                    S[i][j] = S2[i][j];//toti vecinii au gradient mai mic
+        //outline thinning
+        while (true) {
+            boolean changed = false;
+            for (int i = 1; i < DIM - 1; i++) {
+                for (int j = 1; j < DIM - 1; j++) {
+                    if ((Theta[i][j] == 0 && (S2[i][j] < S2[i][j + 1] || S2[i][j] < S2[i][j - 1]))
+                            || (Theta[i][j] == 45 && (S2[i][j] < S2[i - 1][j + 1] || S2[i][j] < S2[i + 1][j - 1]))
+                            || (Theta[i][j] == -45 && (S2[i][j] < S2[i + 1][j + 1] || S2[i][j] < S2[i - 1][j - 1]))
+                            || ((Theta[i][j] == -90 || Theta[i][j] == 90)
+                            && (S2[i][j] < S2[i + 1][j] || S2[i][j] < S2[i - 1][j]) //                       ||
+                            //                 (Theta[i][j]==90 && S2[i][j]<S2[i-1][j])
+                            )) {
+                        S[i][j] = 0;
+                        changed = true;
+                    } else {
+                        S[i][j] = S2[i][j];
+                    }
                 }
+            }
+            if (!changed) {
+                break;
             }
         }
 
-        //binarizare cu histerezis
-        //punem rezultatul �n S2
-        //toti pixelii pt care gradientul depaseste pragul de sus sunt adaugati
-        //la contur
+        //hysteresis thresholding
         for (int i = 1; i < DIM - 1; i++) {
             for (int j = 1; j < DIM - 1; j++) {
                 if (S[i][j] > highThreshold) {
@@ -453,34 +391,33 @@ public class DigitalImage {
                 }
             }
         }
-        //toti vecinii pt care gradientul depaseste pragul de jos sunt adaugati
-        //la contur
+        //all neighbours that go over the lower threshold are added to the outline
         for (int i = 1; i < DIM - 1; i++) {
             for (int j = 1; j < DIM - 1; j++) {
                 Y[i][j] = S2[i][j];
                 if (S2[i][j] == 0) {
-                    if (S[i - 1][j] > lowThreshold) { //sus
+                    if (S[i - 1][j] > lowThreshold) { //top
                         Y[i - 1][j] = 0;
                     }
-                    if (S[i][j + 1] > lowThreshold) { //dreapta
+                    if (S[i][j + 1] > lowThreshold) { //right
                         Y[i][j + 1] = 0;
                     }
-                    if (S[i][j - 1] > lowThreshold) { //stanga
+                    if (S[i][j - 1] > lowThreshold) { //left
                         Y[i][j - 1] = 0;
                     }
-                    if (S[i + 1][j] > lowThreshold) { //jos
+                    if (S[i + 1][j] > lowThreshold) { //bottom
                         Y[i + 1][j] = 0;
                     }
-                    if (S[i - 1][j - 1] > lowThreshold) { //stanga sus
+                    if (S[i - 1][j - 1] > lowThreshold) { //left top
                         Y[i - 1][j - 1] = 0;
                     }
-                    if (S[i - 1][j + 1] > lowThreshold) {  //stanga jos
+                    if (S[i - 1][j + 1] > lowThreshold) {  //left bottom
                         Y[i - 1][j + 1] = 0;
                     }
-                    if (S[i - 1][j + 1] > lowThreshold) {  //dreapta sus
+                    if (S[i - 1][j + 1] > lowThreshold) {  //right top
                         Y[i - 1][j + 1] = 0;
                     }
-                    if (S[i + 1][j + 1] > lowThreshold) { //dreapta jos
+                    if (S[i + 1][j + 1] > lowThreshold) { //right bottom
                         Y[i + 1][j + 1] = 0;
                     }
                 }
@@ -490,19 +427,18 @@ public class DigitalImage {
     }
 
     void markSobelOutline(float threshold) {
-        filtrate(Y, S, new float[][]{{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}},
-                1, DIM);//S va contine gradientii orizontali
-        filtrate(Y, S2, new float[][]{{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}},
-                1, DIM);//S2 va contine gradientii verticali
+        filter(Y, S, new float[][]{{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}},
+                1, DIM);//S will contain horisontal gradients
+        filter(Y, S2, new float[][]{{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}},
+                1, DIM);//S2 will contain vertical gradients
 
-        //urmeaza binarizarea care ?ine cont de modului gradientului
+        //thresholding
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
                 if (Math.abs(S[i][j]) + Math.abs(S2[i][j]) > threshold) {
-                    Y[i][j] = 0;//modulul gradientului este peste prag
-                } //pixel = negru
-                else {
-                    Y[i][j] = 255;//pixel=alb
+                    Y[i][j] = 0;//if module of the gradient exceedes the threshold the pixel transforms to black
+                } else {
+                    Y[i][j] = 255;//else it's white
                 }
             }
         }
@@ -525,15 +461,15 @@ public class DigitalImage {
         }
     }
 
-    void markOutline2() {
-        markOutlineE(Y, S, DIM);
+    void markOutline2(float p) {
+        markOutlineE(Y, S, DIM, p);
         copy(Y, S, DIM);
     }
 
-    void markOutlineE(float[][] orig, float[][] dest, int n) {
+    void markOutlineE(float[][] orig, float[][] dest, int n, float p) {
         for (int i = 1; i < n - 1; i++) {
             for (int j = 1; j < n - 1; j++) {
-                if (peConturExt(orig, i, j)) {
+                if (outsideOutline(orig, i, j, p)) {
                     dest[i][j] = 0;
                 } else {
                     dest[i][j] = 255;
@@ -543,9 +479,8 @@ public class DigitalImage {
     }
 
     boolean insideOutline(float[][] tab, int i, int j, int p) {
-//        float p = 12;//prag determinare contur
-        float x = tab[i][j];//pixelul acoperit de elementul central
-        //pixel central mai intunecat==> contuir interior
+        float x = tab[i][j];//pixel covered by the central element
+        //darker pixel ==> inside outline
         return tab[i - 1][j - 1] - x > p
                 || tab[i - 1][j] - x > p
                 || tab[i - 1][j + 1] - x > p
@@ -556,10 +491,9 @@ public class DigitalImage {
                 || tab[i + 1][j] - x > p;
     }
 
-    boolean peConturExt(float[][] tab, int i, int j) {
-        float p = 12;//prag determinare contur
-        float x = tab[i][j];//pixelul acoperit de elementul central
-        //pixel central mai luminos==> contur exterior
+    boolean outsideOutline(float[][] tab, int i, int j, float p) {
+        float x = tab[i][j];//pixel covered by the central element
+        //brighter pixel ==> outside outline
         return x - tab[i - 1][j - 1] > p
                 || x - tab[i - 1][j] > p
                 || x - tab[i - 1][j + 1] > p
@@ -571,12 +505,8 @@ public class DigitalImage {
     }
 
     void sharpenDetails(float c) {
-        //c>8
-        //c=8 --> Filtrul trece sus
-        //c mare --> imagine nemodificata
-        //c apropiat de 8 --> accentuare detalii
-//        float c = 10f;
-        filtrate(Y, S, new float[][]{{-1, -1, -1}, {-1, c, -1}, {-1, -1, -1}},
+
+        filter(Y, S, new float[][]{{-1, -1, -1}, {-1, c, -1}, {-1, -1, -1}},
                 c - 8, DIM);
         copy(Y, S, DIM);
     }
@@ -604,24 +534,24 @@ public class DigitalImage {
         int l = (lat - 1) / 2;
         for (int k = -l; k <= l; k++) {
             for (int p = -l; p <= l; p++) {
-                tab[x++] = orig[i + k][j + p];//copiaza pixelii 
-            }                //ce urmeaza sa fie sortati in tabloul tab
-        }        //sorteaza(tab);
+                tab[x++] = orig[i + k][j + p];
+            }
+        }
         Arrays.sort(tab);
         switch (tipFil) {
             case 1:
-                return tab[0];//minim
+                return tab[0];//min
             case 2:
-                return tab[tab.length - 1];//maxim
+                return tab[tab.length - 1];//max
             case 3:
                 return tab[tab.length / 2];//median
             case 4:
                 return Math.abs(tab[tab.length - 1] - tab[0]);//interval
         }
-        return 0;//pt compilator 
+        return 0;
     }
 
-    void minimMaximMedianInterval(float[][] orig, float[][] dest,
+    void minMaxMedianInterval(float[][] orig, float[][] dest,
             int n, int lat, int tipFil) {
         int l = (lat - 1) / 2;
         for (int i = l; i < n - l; i++) {
@@ -632,55 +562,45 @@ public class DigitalImage {
     }
 
     void median() {
-        minimMaximMedianInterval(Y, S, DIM, 3, 3);
+        minMaxMedianInterval(Y, S, DIM, 3, 3);
         fixBorders(S, DIM);
-        //3=dimensiunea filtrului (3x3)
-        //1=minim
-        //2=maxim
-        //3=median
-        //4=interval
         copy(Y, S, DIM);
     }
 
     void max() {
-        minimMaximMedianInterval(Y, S, DIM, 3, 2);
+        minMaxMedianInterval(Y, S, DIM, 3, 2);
         fixBorders(S, DIM);
         copy(Y, S, DIM);
     }
 
     void min() {
-        minimMaximMedianInterval(Y, S, DIM, 3, 1);
+        minMaxMedianInterval(Y, S, DIM, 3, 1);
         fixBorders(S, DIM);
         copy(Y, S, DIM);
     }
 
     void interval() {
-        minimMaximMedianInterval(Y, S, DIM, 3, 4);
+        minMaxMedianInterval(Y, S, DIM, 3, 4);
         fixBorders(S, DIM);
         copy(Y, S, DIM);
     }
 
-    void filtrate(float[][] orig, float[][] dest,
+    void filter(float[][] orig, float[][] dest,
             float[][] w, float suma, int n) {
-        //w filtrul
-        //calculez pozitia elementului aflat in centrul filtrului
+        // w = filter
+        //calculate position of the center element of the filter
         int l = (w.length - 1) / 2;
-        int h = (w[0].length - 1) / 2;//tabloul e dreptunghiular
-        //elementul central al filtrului se gaseste pe linia l si coloana h
-        for (int i = 0; i < n; i++)//nu filtram primele si ultimele l randuri
-        {
-            for (int j = 0; j < n; j++)//nu filtram primele si ultimele h coloane
-            //i,j reprezinta pozitia pixelului pe care il filtram
-            {
-                dest[i][j] = fil(orig, w, i, j, n) / suma;//fil calculeaza suma de produse
-            }                                               //evit sa pun �nca 2 bucle
+        int h = (w[0].length - 1) / 2;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                dest[i][j] = fil(orig, w, i, j, n) / suma;
+            }
         }
     }
 
     float fil(float[][] orig, float[][] w, int lin, int col, int n) {
         int l = (w.length - 1) / 2;
-        int h = (w[0].length - 1) / 2;//tabloul e dreptunghiular
-        //elementul central al filtrului se gaseste pe linia l si coloana h
+        int h = (w[0].length - 1) / 2;
         float rez = 0;
         int lc, cc;
         for (int i = -l; i <= l; i++) {
@@ -715,53 +635,53 @@ public class DigitalImage {
     float[][] filtruBox = {{1, 1, 1}, {1, 1, 1}, {1, 1, 1}};
 
     void box3x3() {
-        filtrate(Y, S, filtruBox, 9, DIM);
+        filter(Y, S, filtruBox, 9, DIM);
         //param: f, g, h, suma_coef, latura_imaginii
         copy(Y, S, DIM);
 
-        filtrate(I, S, filtruBox, 9, DIM / 2);
+        filter(I, S, filtruBox, 9, DIM / 2);
         copy(I, S, DIM / 2);
-        filtrate(Q, S, filtruBox, 9, DIM / 2);
+        filter(Q, S, filtruBox, 9, DIM / 2);
         copy(Q, S, DIM / 2);
     }
 
     void box5x5() {
-        filtrate(Y, S, new float[][]{{1, 1, 1, 1, 1}, {1, 1, 1, 1, 1}, {1, 1, 1, 1, 1},
+        filter(Y, S, new float[][]{{1, 1, 1, 1, 1}, {1, 1, 1, 1, 1}, {1, 1, 1, 1, 1},
         {1, 1, 1, 1, 1}, {1, 1, 1, 1, 1}}, 25, DIM);
         copy(Y, S, DIM);
 
-        filtrate(I, S, new float[][]{{1, 1, 1, 1, 1}, {1, 1, 1, 1, 1}, {1, 1, 1, 1, 1},
+        filter(I, S, new float[][]{{1, 1, 1, 1, 1}, {1, 1, 1, 1, 1}, {1, 1, 1, 1, 1},
         {1, 1, 1, 1, 1}, {1, 1, 1, 1, 1}}, 25, DIM / 2);
         copy(I, S, DIM / 2);
-        filtrate(Q, S, new float[][]{{1, 1, 1, 1, 1}, {1, 1, 1, 1, 1}, {1, 1, 1, 1, 1},
+        filter(Q, S, new float[][]{{1, 1, 1, 1, 1}, {1, 1, 1, 1, 1}, {1, 1, 1, 1, 1},
         {1, 1, 1, 1, 1}, {1, 1, 1, 1, 1}}, 25, DIM / 2);
         copy(Q, S, DIM / 2);
     }
-    
+
     void box7x7() {
-        filtrate(Y, S, new float[][]{{1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1},
+        filter(Y, S, new float[][]{{1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1},
         {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}}, 49, DIM);
         copy(Y, S, DIM);
 
-        filtrate(I, S, new float[][]{{1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1},
+        filter(I, S, new float[][]{{1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1},
         {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}}, 49, DIM / 2);
         copy(I, S, DIM / 2);
-        filtrate(Q, S, new float[][]{{1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1},
+        filter(Q, S, new float[][]{{1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1},
         {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}, {1, 1, 1, 1, 1, 1, 1}}, 49, DIM / 2);
         copy(Q, S, DIM / 2);
     }
 
     void gaussian() {
-        filtrate(Y, S, new float[][]{{1, 2, 1}, {2, 4, 2}, {1, 2, 1}}, 16, DIM);
+        filter(Y, S, new float[][]{{1, 2, 1}, {2, 4, 2}, {1, 2, 1}}, 16, DIM);
         copy(Y, S, DIM);
-        filtrate(I, S, new float[][]{{1, 2, 1}, {2, 4, 2}, {1, 2, 1}}, 16, DIM / 2);
+        filter(I, S, new float[][]{{1, 2, 1}, {2, 4, 2}, {1, 2, 1}}, 16, DIM / 2);
         copy(I, S, DIM / 2);
-        filtrate(Q, S, new float[][]{{1, 2, 1}, {2, 4, 2}, {1, 2, 1}}, 16, DIM / 2);
+        filter(Q, S, new float[][]{{1, 2, 1}, {2, 4, 2}, {1, 2, 1}}, 16, DIM / 2);
         copy(Q, S, DIM / 2);
     }
 
     void noise2() {
-        //adauga/scade zgomot
+        //add/reduce noise
         float k = 0.1f;
         ImageIcon zgomot = Const.picture;
         int pixeliImagine[] = new int[DIM * DIM];
@@ -805,7 +725,7 @@ public class DigitalImage {
             return;
         }
         int r, g, b;
-        //adauga zgomotul la Y
+        //add noise to Y
         ColorModel cm = ColorModel.getRGBdefault();
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
@@ -813,19 +733,18 @@ public class DigitalImage {
                 g = cm.getGreen(pixeliImagine[i * DIM + j]);
                 b = cm.getBlue(pixeliImagine[i * DIM + j]);
                 Y[i][j] += k * (0.299f * r + 0.587f * g + 0.114f * b);
-                //adaug la Y luminozitatea zgomotului*k
             }
         }
 
     }
 
     void laplacianHV() {
-        filtrate(Y, S, new float[][]{{0, 1, 0}, {1, -4, 1}, {0, 1, 0}}, 1, DIM);
+        filter(Y, S, new float[][]{{0, 1, 0}, {1, -4, 1}, {0, 1, 0}}, 1, DIM);
         copy(Y, S, DIM);
     }
 
     void laplacianHVD() {
-        filtrate(Y, S, new float[][]{{1, 1, 1}, {1, -8, 1}, {1, 1, 1}}, 1, DIM);
+        filter(Y, S, new float[][]{{1, 1, 1}, {1, -8, 1}, {1, 1, 1}}, 1, DIM);
         copy(Y, S, DIM);
     }
 
@@ -846,14 +765,11 @@ public class DigitalImage {
     }
 
     void interpolate(float[][] tab, int n) {
-        //pe coloane
-        for (int i = 0; i < n; i += 2)//trateaza doar liniile pare
-        {
+        for (int i = 0; i < n; i += 2) {
             for (int j = 1; j < n - 1; j += 2) {
                 tab[i][j] = (tab[i][j - 1] + tab[i][j + 1]) / 2;
             }
         }
-        //pe linii
         for (int i = 1; i < n - 1; i += 2) {
             for (int j = 0; j < n; j++) {
                 tab[i][j] = (tab[i - 1][j] + tab[i + 1][j]) / 2;
@@ -867,96 +783,81 @@ public class DigitalImage {
     }
 
     void normH(float[][] tab) {
-        //Normalizare histograma 2
+        //normalize hystogram 2
         int[] shades = new int[256];
         int p, n;
-        for (int i = 0; i < DIM; i++)//caculez nr de pixeli de fiecare nuanta
+        for (int i = 0; i < DIM; i++)//calculate nr of pixel for each nuance
         {
             for (int j = 0; j < DIM; j++) {
                 n = fixEnds(Math.round(tab[i][j]));
-                shades[n]++;//pozitia din tablou reprezinta nuanta
-                //valorile din tablou reprezinta distributiile nuantelor (nr pixeli de nuanta n)
+                shades[n]++;//position from array represents nuance
             }
         }
-        //determin nr de pixeli de intensitate minima
+        //determine number of pixels with lower intensity
         int dmin = 0;
-        for (int i = 0; i < 256; i++)//calculez dmin
+        for (int i = 0; i < 256; i++)//calculate dmin
         {
             if (shades[i] != 0) {
-                dmin = shades[i];//primul element nenul din tablou e dmin
+                dmin = shades[i];
                 break;
             }
         }
         int sum = 0;
-        for (int i = 0; i < 256; i++) {//calculez distributiile cumulative
+        for (int i = 0; i < 256; i++) {
             sum += shades[i];
-            shades[i] = sum;//nuante[255]=DIM*DIM
+            shades[i] = sum;
         }
         int u;
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
-                u = fixEnds(Math.round(tab[i][j]));//(int)tab[i][j];
+                u = fixEnds(Math.round(tab[i][j]));
                 tab[i][j] = (shades[u] - dmin) * 255 / (DIM * DIM - dmin);
             }
         }
     }
 
     void normalizeHistogram() {
-        //normalizare histograma
+        //normalizare hystogram
         float[] weights = new float[256];
         float sum = 0;
         for (int i = 0; i < 256; i++) {
-            sum += pixels[i];//suma pixeli mai intunecati decat i
-            //obs trebuie trasata mai intai histograma, pt calcularea tabloului pixeli
+            sum += pixels[i];//sum of pixels darker than i
             weights[i] = sum / DIM / DIM;
-            //calculeaza ponderea pt fiecare nuan?a
         }
         int p;
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
                 p = fixEnds(Math.round(Y[i][j]));
-                //p=luminozitatea initiala
-                Y[i][j] *= weights[p];//pozitia in tabloul de ponderi
-                //corespunde luminozitatii
+                //p=initial brightness
+                Y[i][j] *= weights[p];
             }
         }
     }
     int[] pixels;
 
-    //frecvente nuante, va fi folosit la normalizarea histogramei
     void histogram(JPanel jPanel2) {
-        //trasare histograma
-        pixels = new int[256];//pozitia reprezinta nuanta
-        //tabloul e initializat automat cu 0
-
-//        for(int i=0; i<256; i++)
-//            pixeli[i]=0;//initializarea nu e necesara
-        //scest tablou contine frecventele de aparitie ale nuantelor
-        //pozitia in tablou indica nuanta
-        //valoarea elem i -> nr de pixeli de nuanta i
+        //mark hystogram
+        pixels = new int[256];//position represents nuance
         int p, zero;
-        //numara pixelii de fiecare nuan?a
+        //count pixels for each nuance
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
                 p = fixEnds(Math.round(Y[i][j]));
                 pixels[p]++;
-                //pozitia din tabloul pixeli indica nuanta
             }
         }
         Graphics g = jPanel2.getGraphics();
-        //?terge o eventuala histograma existenta
+        //clean screen
         g.setColor(Color.white);
         g.fillRect(0, 0, jPanel2.getWidth(), jPanel2.getHeight());
-        //deseneaza cu negru
+        //paint black
         g.setColor(Color.black);
-        //stabile?te pozi?ia abscisei
         zero = jPanel2.getHeight() - 10;
         for (int i = 0; i < 256; i++) {
             p = pixels[i];
             g.drawLine(i, zero, i, zero - p / 10);
-            //traseaza o linie verticala,
-            //lungimea e propor?ionala cu nr de pixeli
-            //de intensitate i
+            //mark a vertical line,
+            //the size of the line equals the number of pixels of same nuance
         }
     }
 
@@ -965,7 +866,6 @@ public class DigitalImage {
     }
 
     void brightness(float[][] dest, float[][] orig, int n, float a) {
-        //---------------------------------------------
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 dest[i][j] = orig[i][j] + a;
@@ -996,7 +896,6 @@ public class DigitalImage {
     }
 
     void contrast2(float[][] dest, float[][] orig, int n) {
-        //---------------------------------------------
         float MAX = 255;
         float a = -10;
         float x;
@@ -1035,7 +934,6 @@ public class DigitalImage {
     }
 
     void contrast(float[][] dest, float[][] orig, int n) {
-        //---------------------------------------------
         float a = 10;
         float b = 245;
         float fa = a - 9;
@@ -1056,18 +954,18 @@ public class DigitalImage {
         }
     }
 
-    private void fixBorders(float[][] dest, int n){
-        for(int i = 0; i < n; i++){
+    private void fixBorders(float[][] dest, int n) {
+        for (int i = 0; i < n; i++) {
             dest[i][0] = dest[i][1]; //left border
             dest[0][i] = dest[1][i]; //top border
-            dest[n-1][i] = dest[n-2][i]; //bot border
-            dest[i][n-1] = dest[i][n-2];
+            dest[n - 1][i] = dest[n - 2][i]; //bot border
+            dest[i][n - 1] = dest[i][n - 2];
         }
-        
+
         //fix image corners
         dest[0][0] = dest[1][1]; //top left
-        dest[0][n-1] = dest[1][n-2]; //top right
-        dest[n-1][0] = dest[n-2][2]; //bot left
-        dest[n-1][n-1] = dest[n-2][n-2]; //bot right
+        dest[0][n - 1] = dest[1][n - 2]; //top right
+        dest[n - 1][0] = dest[n - 2][2]; //bot left
+        dest[n - 1][n - 1] = dest[n - 2][n - 2]; //bot right
     }
 }
