@@ -81,6 +81,14 @@ public class GUI extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jSlider8 = new javax.swing.JSlider();
         jLabel9 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jButton24 = new javax.swing.JButton();
+        jButton25 = new javax.swing.JButton();
+        jButton26 = new javax.swing.JButton();
+        jButton27 = new javax.swing.JButton();
+        jButton28 = new javax.swing.JButton();
+        jPanel10 = new javax.swing.JPanel();
+        jButton29 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jCheckBox1 = new javax.swing.JCheckBox();
@@ -579,6 +587,86 @@ public class GUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("contur/detalii", jPanel9);
 
+        jButton24.setText("Dilatare");
+        jButton24.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton24ActionPerformed(evt);
+            }
+        });
+
+        jButton25.setText("Eroziune");
+
+        jButton26.setText("Umplere");
+
+        jButton27.setText("trasare contur");
+
+        jButton28.setText("binarizare");
+        jButton28.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton28ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton28)
+                    .addComponent(jButton27)
+                    .addComponent(jButton26)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addComponent(jButton24)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton25)))
+                .addContainerGap(407, Short.MAX_VALUE))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(38, 38, 38)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton24)
+                    .addComponent(jButton25))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton26)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton27)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton28)
+                .addContainerGap(451, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Transf. binare", jPanel8);
+
+        jButton29.setText("Negativare");
+        jButton29.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton29ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addComponent(jButton29)
+                .addContainerGap(462, Short.MAX_VALUE))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addComponent(jButton29)
+                .addContainerGap(521, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("Contrast/Lumi", jPanel10);
+
         jButton1.setText("Afiseaza");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -654,6 +742,18 @@ public class GUI extends javax.swing.JFrame {
         showDigitalImage();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jSlider8StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider8StateChanged
+        // outside outline slider
+        int value = ((JSlider)evt.getSource()).getValue();
+        jLabel9.setText(String.valueOf(value));
+    }//GEN-LAST:event_jSlider8StateChanged
+
+    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
+        // sharpen details slider
+        int value = ((JSlider)evt.getSource()).getValue();
+        jLabel7.setText(String.valueOf(value / 10f));
+    }//GEN-LAST:event_jSlider1StateChanged
+
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
         // mark outside outline
         di.markOutline2(jSlider8.getValue());
@@ -679,6 +779,12 @@ public class GUI extends javax.swing.JFrame {
         jLabel3.setText(String.valueOf(value));
     }//GEN-LAST:event_jSlider6StateChanged
 
+    private void jSlider5StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider5StateChanged
+        // interval slider
+        int value = ((JSlider)evt.getSource()).getValue();
+        jLabel6.setText(String.valueOf(value));
+    }//GEN-LAST:event_jSlider5StateChanged
+
     private void jSlider4StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider4StateChanged
         //laplacian slider
         int value = ((JSlider) evt.getSource()).getValue();
@@ -701,6 +807,18 @@ public class GUI extends javax.swing.JFrame {
         showDigitalImage();
     }//GEN-LAST:event_jButton17ActionPerformed
 
+    private void jSlider3StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider3StateChanged
+        // interior outline slider
+        int value = ((JSlider)evt.getSource()).getValue();
+        jLabel4.setText(String.valueOf(value));
+    }//GEN-LAST:event_jSlider3StateChanged
+
+    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+        // interior outline
+        di.markOutline1(jSlider3.getValue());
+        showDigitalImage();
+    }//GEN-LAST:event_jButton16ActionPerformed
+
     private void jSlider2StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider2StateChanged
         // canny's high threshold
         int value = ((JSlider) evt.getSource()).getValue();
@@ -719,11 +837,41 @@ public class GUI extends javax.swing.JFrame {
         showDigitalImage();
     }//GEN-LAST:event_jButton14ActionPerformed
 
+    private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
+        // box7x7
+        di.box7x7();
+        showDigitalImage();
+    }//GEN-LAST:event_jButton22ActionPerformed
+
+    private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
+        // box5x5
+        di.box5x5();
+        showDigitalImage();
+    }//GEN-LAST:event_jButton21ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        // gaussian
+        di.gaussian();
+        showDigitalImage();
+    }//GEN-LAST:event_jButton13ActionPerformed
+
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         //laplacianHVD
         di.laplacianHVD();
         showDigitalImage();
     }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        // interval
+        di.interval();
+        showDigitalImage();
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        // min
+        di.min();
+        showDigitalImage();
+    }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         //max
@@ -755,6 +903,11 @@ public class GUI extends javax.swing.JFrame {
         showDigitalImage();
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
+        // hyst
+        di.histogram(jPanel7);
+    }//GEN-LAST:event_jButton23ActionPerformed
+
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         //zoom-
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -763,70 +916,23 @@ public class GUI extends javax.swing.JFrame {
         //zoom+
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jSlider5StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider5StateChanged
-        // interval slider
-        int value = ((JSlider)evt.getSource()).getValue();
-        jLabel6.setText(String.valueOf(value));
-    }//GEN-LAST:event_jSlider5StateChanged
-
-    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-        // interior outline
-        di.markOutline1(jSlider3.getValue());
+    private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
+        // binary expand
+        di.expandBinary();
         showDigitalImage();
-    }//GEN-LAST:event_jButton16ActionPerformed
+    }//GEN-LAST:event_jButton24ActionPerformed
 
-    private void jSlider3StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider3StateChanged
-        // interior outline slider
-        int value = ((JSlider)evt.getSource()).getValue();
-        jLabel4.setText(String.valueOf(value));
-    }//GEN-LAST:event_jSlider3StateChanged
-
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        // gaussian
-        di.gaussian();
+    private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
+        // thresholding
+        di.thresholding();
         showDigitalImage();
-    }//GEN-LAST:event_jButton13ActionPerformed
+    }//GEN-LAST:event_jButton28ActionPerformed
 
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // min
-        di.min();
+    private void jButton29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton29ActionPerformed
+        // negative
+        di.negative();
         showDigitalImage();
-    }//GEN-LAST:event_jButton10ActionPerformed
-
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // interval
-        di.interval();
-        showDigitalImage();
-    }//GEN-LAST:event_jButton11ActionPerformed
-
-    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
-        // sharpen details slider
-        int value = ((JSlider)evt.getSource()).getValue();
-        jLabel7.setText(String.valueOf(value / 10f));
-    }//GEN-LAST:event_jSlider1StateChanged
-
-    private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
-        // box5x5
-        di.box5x5();
-        showDigitalImage();
-    }//GEN-LAST:event_jButton21ActionPerformed
-
-    private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
-        // box7x7
-        di.box7x7();
-        showDigitalImage();
-    }//GEN-LAST:event_jButton22ActionPerformed
-
-    private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
-        // hyst
-        di.histogram(jPanel7);
-    }//GEN-LAST:event_jButton23ActionPerformed
-
-    private void jSlider8StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider8StateChanged
-        // outside outline slider
-        int value = ((JSlider)evt.getSource()).getValue();
-        jLabel9.setText(String.valueOf(value));
-    }//GEN-LAST:event_jSlider8StateChanged
+    }//GEN-LAST:event_jButton29ActionPerformed
 
     private void showDigitalImage() {
         di.show(jLabel1, jCheckBox1.isSelected());
@@ -904,6 +1010,12 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton21;
     private javax.swing.JButton jButton22;
     private javax.swing.JButton jButton23;
+    private javax.swing.JButton jButton24;
+    private javax.swing.JButton jButton25;
+    private javax.swing.JButton jButton26;
+    private javax.swing.JButton jButton27;
+    private javax.swing.JButton jButton28;
+    private javax.swing.JButton jButton29;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
@@ -922,12 +1034,14 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JSlider jSlider1;
     private javax.swing.JSlider jSlider2;

@@ -968,4 +968,9 @@ public class DigitalImage {
         dest[n - 1][0] = dest[n - 2][2]; //bot left
         dest[n - 1][n - 1] = dest[n - 2][n - 2]; //bot right
     }
+
+    void expandBinary() {
+        calcExpansion(Y,S,DIM);
+        copy(Y, S, DIM);
+    }
 }
