@@ -231,7 +231,7 @@ public class DigitalImage {
         }
     }
 
-    void outlineThreshold() {
+    void outlineBin() {
         calculateErosion(Y, S, DIM);
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {

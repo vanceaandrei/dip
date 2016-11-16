@@ -5,6 +5,8 @@
  */
 package com.vanceaandrei.dip;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import javax.swing.JSlider;
 import util.Const;
 
@@ -15,6 +17,8 @@ import util.Const;
 public class GUI extends javax.swing.JFrame {
 
     DigitalImage di;
+    int mouseX;
+    int mouseY;
 
     /**
      * Creates new form GUI
@@ -87,6 +91,7 @@ public class GUI extends javax.swing.JFrame {
         jButton26 = new javax.swing.JButton();
         jButton27 = new javax.swing.JButton();
         jButton28 = new javax.swing.JButton();
+        jLabel10 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jButton29 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -98,6 +103,11 @@ public class GUI extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jLabel1.setName(""); // NOI18N
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jLabel1MousePressed(evt);
+            }
+        });
 
         jButton3.setText("zoom+");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -595,10 +605,25 @@ public class GUI extends javax.swing.JFrame {
         });
 
         jButton25.setText("Eroziune");
+        jButton25.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton25ActionPerformed(evt);
+            }
+        });
 
         jButton26.setText("Umplere");
+        jButton26.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton26ActionPerformed(evt);
+            }
+        });
 
         jButton27.setText("trasare contur");
+        jButton27.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton27ActionPerformed(evt);
+            }
+        });
 
         jButton28.setText("binarizare");
         jButton28.addActionListener(new java.awt.event.ActionListener() {
@@ -606,6 +631,8 @@ public class GUI extends javax.swing.JFrame {
                 jButton28ActionPerformed(evt);
             }
         });
+
+        jLabel10.setText("0, 0");
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -616,7 +643,10 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton28)
                     .addComponent(jButton27)
-                    .addComponent(jButton26)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addComponent(jButton26)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel10))
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(jButton24)
                         .addGap(18, 18, 18)
@@ -631,7 +661,9 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(jButton24)
                     .addComponent(jButton25))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton26)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton26)
+                    .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton27)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -744,13 +776,13 @@ public class GUI extends javax.swing.JFrame {
 
     private void jSlider8StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider8StateChanged
         // outside outline slider
-        int value = ((JSlider)evt.getSource()).getValue();
+        int value = ((JSlider) evt.getSource()).getValue();
         jLabel9.setText(String.valueOf(value));
     }//GEN-LAST:event_jSlider8StateChanged
 
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         // sharpen details slider
-        int value = ((JSlider)evt.getSource()).getValue();
+        int value = ((JSlider) evt.getSource()).getValue();
         jLabel7.setText(String.valueOf(value / 10f));
     }//GEN-LAST:event_jSlider1StateChanged
 
@@ -781,7 +813,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void jSlider5StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider5StateChanged
         // interval slider
-        int value = ((JSlider)evt.getSource()).getValue();
+        int value = ((JSlider) evt.getSource()).getValue();
         jLabel6.setText(String.valueOf(value));
     }//GEN-LAST:event_jSlider5StateChanged
 
@@ -809,7 +841,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void jSlider3StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider3StateChanged
         // interior outline slider
-        int value = ((JSlider)evt.getSource()).getValue();
+        int value = ((JSlider) evt.getSource()).getValue();
         jLabel4.setText(String.valueOf(value));
     }//GEN-LAST:event_jSlider3StateChanged
 
@@ -833,7 +865,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         // sharpen details
-        di.sharpenDetails((float)jSlider1.getValue() / 10f);
+        di.sharpenDetails((float) jSlider1.getValue() / 10f);
         showDigitalImage();
     }//GEN-LAST:event_jButton14ActionPerformed
 
@@ -934,6 +966,36 @@ public class GUI extends javax.swing.JFrame {
         showDigitalImage();
     }//GEN-LAST:event_jButton29ActionPerformed
 
+    private void jLabel1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MousePressed
+        // on mouse pressed save mouseX and mouseY
+        mouseX = evt.getX();
+        mouseY = evt.getY();
+        jLabel10.setText(mouseX + "," + mouseY);
+        //mark the selected point with a cross
+        Graphics g = jLabel1.getGraphics();
+        g.setColor(Color.red);
+        g.drawLine(mouseX, mouseY - 6, mouseX, mouseY + 6);
+        g.drawLine(mouseX - 6, mouseY, mouseX + 6, mouseY);
+    }//GEN-LAST:event_jLabel1MousePressed
+
+    private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
+        // fill outline
+        di.fill(mouseY, mouseX);
+        showDigitalImage();
+    }//GEN-LAST:event_jButton26ActionPerformed
+
+    private void jButton27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton27ActionPerformed
+        // binary transformation mark outline
+        di.outlineBin();
+        showDigitalImage();
+    }//GEN-LAST:event_jButton27ActionPerformed
+
+    private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
+        // binary transformation erosion
+        di.erosion();
+        showDigitalImage();
+    }//GEN-LAST:event_jButton25ActionPerformed
+
     private void showDigitalImage() {
         di.show(jLabel1, jCheckBox1.isSelected());
     }
@@ -1025,6 +1087,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton9;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
