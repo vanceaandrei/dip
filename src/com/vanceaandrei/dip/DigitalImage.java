@@ -231,7 +231,7 @@ public class DigitalImage {
         }
     }
 
-    void outlineThreshold() {
+    void outlineBin() {
         calculateErosion(Y, S, DIM);
         for (int i = 0; i < DIM; i++) {
             for (int j = 0; j < DIM; j++) {
@@ -967,5 +967,10 @@ public class DigitalImage {
         dest[0][n - 1] = dest[1][n - 2]; //top right
         dest[n - 1][0] = dest[n - 2][2]; //bot left
         dest[n - 1][n - 1] = dest[n - 2][n - 2]; //bot right
+    }
+
+    void expandBinary() {
+        calcExpansion(Y,S,DIM);
+        copy(Y, S, DIM);
     }
 }
